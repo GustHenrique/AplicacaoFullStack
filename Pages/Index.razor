@@ -1,65 +1,40 @@
-﻿@page "/"
+﻿@layout EmptyLayout
+@page "/"
 
 @using AplicacaoFullStack.Models
-@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager;
 @inject AplicacaoFullStack.Services.IClienteService ClienteService;
 
-<PageTitle>Projeto FullStack</PageTitle>
+<PageTitle>Login</PageTitle>
 
-<h1>Clientes</h1>
+<div class="limitador">
+		<div class="conteudo-login">
+			<div class="tamanho-login">	
+				<form @onsubmit="login">
+					<span class="titulo-login">
+						Login
+					</span>
 
-<a href="/create" class="btn btn-success"> Criar</a>
+					<div class="conteudo-input-email">
+						<input class="formatacao-input" type="email" required name="email" minlength="8" maxlength="65" placeholder="seuemail@exemplo.com">
+					</div>
+					
+					
+					<div class="conteudo-input-senha">
+						<input class="formatacao-input" type="password" required minlength="6" maxlength="20" name="senha" placeholder="Senha">
+					</div>
 
-<table class="table table-responsive table-striped">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Nome</th>
-            <th>Telefone</th>
-            <th>Email</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if(clientes != null && clientes.Count > 0)
-        {
-            foreach(var item in clientes)
-            {
-                <tr>
-                    <td>@item.id</td>
-                    <td>@item.nome</td>
-                    <td>@item.telefone</td>
-                    <td>@item.email</td>
-                    <td>
-                        <a href="/update/@item.id" class="btn btn-warning">Atualizar</a>
-                        <button class="btn btn-danger" @onclick="async () => await DeleteCliente(item.id)">Deletar</button>
-                    </td>
-                </tr>
-            }
-        }
-    </tbody>
-</table>
+					<input type="submit" value="Acessar" class="botao-login">
+				</form>
+			</div>
+		</div>
+	</div>
 
 @code{
-    List<Cliente> clientes = new();
 
-    protected override async Task OnInitializedAsync()
+	 async Task login()
     {
-        clientes = await ClienteService.FindAll();
+        NavigationManager.NavigateTo("/home");
     }
 
-    async Task DeleteCliente(Guid id)
-    {
-        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Tem certeza que deseja deletar este cliente ?");
-        if (confirmed is false)
-            return;
-
-        var cliente = await ClienteService.GetBy(id);
-
-        await ClienteService.Delete(cliente);
-
-        clientes = await ClienteService.FindAll();
-
-        StateHasChanged();
-    }
 }
