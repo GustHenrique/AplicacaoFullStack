@@ -1,19 +1,22 @@
 ﻿@page "/home"
 
+@layout EmptyLayout
 @using AplicacaoFullStack.Models
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager;
 @inject AplicacaoFullStack.Services.IClienteService ClienteService;
 
-<PageTitle>Projeto FullStack</PageTitle>
+<PageTitle>Home</PageTitle>
 
-<div class="row">
-    <h1 class="col-10">Clientes</h1>
+<div class="limitador">
+    <div class="row">
+        <h1 class="titulo-login">Clientes</h1>
 
-    <a href="/create" class="btn btn-success col-2" style="max-height: 35px;"> Criar</a>
-</div>
+        <button @onclick="cadastrar" class="botao-create" > Cadastrar</button>
+    </div>
 
 <table class="table table-responsive table-striped">
-    <thead>
+    <thead style="border-top: 1px solid black">
         <tr>
             <th>Id</th>
             <th>Nome</th>
@@ -33,17 +36,29 @@
                     <td>@item.telefone</td>
                     <td>@item.email</td>
                     <td>
-                        <a href="/update/@item.id" class="btn btn-warning">Atualizar</a>
-                        <button class="btn btn-danger" @onclick="async () => await DeleteCliente(item.id)">Deletar</button>
+                        <button @onclick="atualizar" class="botao-update">Atualizar</button>
+                        <button class="botao-delete" @onclick="async () => await DeleteCliente(item.id)">Deletar</button>
                     </td>
                 </tr>
             }
         }
     </tbody>
 </table>
+</div>
 
 @code{
     List<Cliente> clientes = new();
+
+    async Task atualizar()
+    {
+        foreach(var item in clientes)
+        NavigationManager.NavigateTo("/update/" + @item.id);
+    }
+    
+    async Task cadastrar()
+    {
+        NavigationManager.NavigateTo("/create");
+    }
 
     protected override async Task OnInitializedAsync()
     {

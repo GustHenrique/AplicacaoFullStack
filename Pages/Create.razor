@@ -1,31 +1,34 @@
 ﻿@page "/create"
 
+@layout EmptyLayout
 @using AplicacaoFullStack.Models
 @inject NavigationManager NavigationManager;
 @inject AplicacaoFullStack.Services.IClienteService ClienteService;
 
-<h1>Cadastrar cliente</h1>
+<div class="limitador">
+    <h1>Cadastrar cliente</h1>
 
 <EditForm Model="cliente" OnValidSubmit="CreateCliente">
     <div class="form-group mb-3">
         <label for="clienteNome">Nome</label> 
-        <input type="text" @bind="cliente.nome" class="form-control" id="clienteNome"/>
+        <input type="text" @bind="cliente.nome" maxlength="45" minlength="6" class="form-control" id="clienteNome"/>
     </div>
     <div class="form-group mb-3">
         <label for="clienteTelefone">Telefone</label> 
-        <input type="text" @bind="cliente.telefone" class="form-control" id="clienteTelefone"/>
+        <input type="number" @bind="cliente.telefone" maxlength="13" minlength="6" class="form-control" id="clienteTelefone"/>
     </div>
     <div class="form-group mb-3">
         <label for="clienteEmail">Email</label> 
-        <input type="text" @bind="cliente.email" class="form-control" id="clienteEmail"/>
+        <input type="email" @bind="cliente.email" class="form-control" id="clienteEmail"/>
     </div>
 
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <button class="btn btn-success" type="submit">Cadastrar cliente</button>
+    <button class="botao-login" type="submit">Cadastrar cliente</button>
 
 </EditForm>
+</div>
 
 @code {
 
@@ -37,6 +40,6 @@
 
         await ClienteService.Add(cliente);
 
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/home");
     }
 }
